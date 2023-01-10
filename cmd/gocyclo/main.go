@@ -68,20 +68,21 @@ func main() {
 	allStats := gocyclo.Analyze(paths, regex(*ignore))
 	shownStats := allStats.SortAndFilter(*top, *over)
 
+	if *avg || *avgShort {
+		printAverage(allStats, *avgShort)
+		return
+	}
+
+	if *over > 0 && len(shownStats) > 0 {
+		return
+	}
+
 	// printStats(shownStats)
 	jsonBytes, err := json.Marshal(shownStats)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(string(jsonBytes))
-
-	if *avg || *avgShort {
-		printAverage(allStats, *avgShort)
-	}
-
-	if *over > 0 && len(shownStats) > 0 {
-		os.Exit(1)
-	}
 }
 
 func regex(expr string) *regexp.Regexp {
@@ -102,10 +103,11 @@ func printStats(s gocyclo.Stats) {
 }
 
 func printAverage(s gocyclo.Stats, short bool) {
-	if !short {
-		fmt.Print("Average: ")
+	avgMap := map[string]string{
+		"average": fmt.Sprintf("%.3g", s.AverageComplexity()),
 	}
-	fmt.Printf("%.3g\n", s.AverageComplexity())
+	jsonBytes, _ := json.Marshal(avgMap)
+	fmt.Println(string(jsonBytes))
 }
 
 func usage() {
