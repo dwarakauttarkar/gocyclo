@@ -23,6 +23,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -67,7 +68,13 @@ func main() {
 	allStats := gocyclo.Analyze(paths, regex(*ignore))
 	shownStats := allStats.SortAndFilter(*top, *over)
 
-	printStats(shownStats)
+	// printStats(shownStats)
+	jsonBytes, err := json.Marshal(shownStats)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(jsonBytes))
+
 	if *avg || *avgShort {
 		printAverage(allStats, *avgShort)
 	}
