@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fzipp/gocyclo"
+	"github.com/dwarakauttarkar/gocyclo"
 )
 
 func TestAnalyze(t *testing.T) {

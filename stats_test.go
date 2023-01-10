@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/fzipp/gocyclo"
+	"github.com/dwarakauttarkar/gocyclo"
 )
 
 func TestAverageComplexity(t *testing.T) {

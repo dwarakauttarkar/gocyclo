@@ -1,3 +1,3 @@
-module github.com/fzipp/gocyclo
+module github.com/dwarakauttarkar/gocyclo
 
 go 1.18
