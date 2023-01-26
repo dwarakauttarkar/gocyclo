@@ -4,16 +4,16 @@
 
 // Package gocyclo calculates the cyclomatic complexities of functions and
 // methods in Go source code.
-package gocyclo
+package cyclomaticindex
 
 import (
 	"go/ast"
 	"go/token"
 )
 
-// Complexity calculates the cyclomatic complexity of a function.
+// Calculate calculates the cyclomatic complexity of a function.
 // The 'fn' node is either a *ast.FuncDecl or a *ast.FuncLit.
-func Complexity(fn ast.Node) int {
+func Calculate(fn ast.Node) int {
 	v := complexityVisitor{
 		complexity: 1,
 	}
