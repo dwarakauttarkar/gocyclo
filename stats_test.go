@@ -13,22 +13,22 @@ func TestAverageComplexity(t *testing.T) {
 		want  float64
 	}{
 		{gocyclo.Stats{
-			{Complexity: 2},
+			{CyclomaticComplexity: 2},
 		}, 2},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
 		}, 2.5},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
-			{Complexity: 4},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 4},
 		}, 3},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
-			{Complexity: 3},
-			{Complexity: 3},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 3},
 		}, 2.75},
 	}
 	for _, tt := range tests {
@@ -45,26 +45,26 @@ func TestTotalComplexity(t *testing.T) {
 		want  uint64
 	}{
 		{gocyclo.Stats{
-			{Complexity: 2},
+			{CyclomaticComplexity: 2},
 		}, 2},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
 		}, 5},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
-			{Complexity: 4},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 4},
 		}, 9},
 		{gocyclo.Stats{
-			{Complexity: 2},
-			{Complexity: 3},
-			{Complexity: 3},
-			{Complexity: 3},
+			{CyclomaticComplexity: 2},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 3},
+			{CyclomaticComplexity: 3},
 		}, 11},
 	}
 	for _, tt := range tests {
-		got := tt.stats.TotalComplexity()
+		got := tt.stats.TotalCyclomaticComplexity()
 		if got != tt.want {
 			t.Errorf("Total complexity for %q, got: %d, want: %d", tt.stats, got, tt.want)
 		}
@@ -80,59 +80,59 @@ func TestSortAndFilter(t *testing.T) {
 	}{
 		{
 			stats: gocyclo.Stats{
-				{Complexity: 1},
-				{Complexity: 4},
-				{Complexity: 2},
-				{Complexity: 3},
+				{CyclomaticComplexity: 1},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 2},
+				{CyclomaticComplexity: 3},
 			},
 			top: -1, over: 0,
 			want: gocyclo.Stats{
-				{Complexity: 4},
-				{Complexity: 3},
-				{Complexity: 2},
-				{Complexity: 1},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 3},
+				{CyclomaticComplexity: 2},
+				{CyclomaticComplexity: 1},
 			},
 		},
 		{
 			stats: gocyclo.Stats{
-				{Complexity: 1},
-				{Complexity: 2},
-				{Complexity: 3},
-				{Complexity: 4},
+				{CyclomaticComplexity: 1},
+				{CyclomaticComplexity: 2},
+				{CyclomaticComplexity: 3},
+				{CyclomaticComplexity: 4},
 			},
 			top: 2, over: 0,
 			want: gocyclo.Stats{
-				{Complexity: 4},
-				{Complexity: 3},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 3},
 			},
 		},
 		{
 			stats: gocyclo.Stats{
-				{Complexity: 1},
-				{Complexity: 2},
-				{Complexity: 4},
-				{Complexity: 4},
-				{Complexity: 5},
+				{CyclomaticComplexity: 1},
+				{CyclomaticComplexity: 2},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 5},
 			},
 			top: -1, over: 3,
 			want: gocyclo.Stats{
-				{Complexity: 5},
-				{Complexity: 4},
-				{Complexity: 4},
+				{CyclomaticComplexity: 5},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 4},
 			},
 		},
 		{
 			stats: gocyclo.Stats{
-				{Complexity: 1},
-				{Complexity: 2},
-				{Complexity: 3},
-				{Complexity: 4},
-				{Complexity: 5},
+				{CyclomaticComplexity: 1},
+				{CyclomaticComplexity: 2},
+				{CyclomaticComplexity: 3},
+				{CyclomaticComplexity: 4},
+				{CyclomaticComplexity: 5},
 			},
 			top: 2, over: 2,
 			want: gocyclo.Stats{
-				{Complexity: 5},
-				{Complexity: 4},
+				{CyclomaticComplexity: 5},
+				{CyclomaticComplexity: 4},
 			},
 		},
 	}

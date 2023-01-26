@@ -15,6 +15,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/dwarakauttarkar/gocyclo/cyclomaticindex"
+	"github.com/dwarakauttarkar/gocyclo/maintainindex"
 )
 
 // Analyze calculates the cyclomatic complexities of the functions and methods
@@ -134,10 +137,11 @@ func (a *fileAnalyzer) addStatIfNotIgnored(node ast.Node, funcName string, doc *
 		return
 	}
 	a.stats = append(a.stats, Stat{
-		PkgName:    a.file.Name.Name,
-		FuncName:   funcName,
-		Complexity: Complexity(node),
-		Pos:        a.fileSet.Position(node.Pos()),
+		PkgName:              a.file.Name.Name,
+		FuncName:             funcName,
+		CyclomaticComplexity: cyclomaticindex.Calculate(node),
+		MaintainabilityIndex: maintainindex.Calculate(node, a.fileSet),
+		Pos:                  a.fileSet.Position(node.Pos()),
 	})
 }
 
