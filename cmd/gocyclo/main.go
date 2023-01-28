@@ -23,7 +23,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -31,6 +30,7 @@ import (
 	"regexp"
 
 	"github.com/dwarakauttarkar/gocyclo"
+	"github.com/dwarakauttarkar/gocyclo/output"
 )
 
 const usageDoc = `Calculate cyclomatic complexities of Go functions.
@@ -50,39 +50,36 @@ The output fields for each line are:
 `
 
 func main() {
-	over := flag.Int("over", 0, "show functions with complexity > N only")
 	top := flag.Int("top", -1, "show the top N most complex functions only")
 	avg := flag.Bool("avg", false, "show the average complexity")
-	avgShort := flag.Bool("avg-short", false, "show the average complexity without a label")
 	ignore := flag.String("ignore", "", "exclude files matching the given regular expression")
 
 	log.SetFlags(0)
 	log.SetPrefix("gocyclo: ")
 	flag.Usage = usage
 	flag.Parse()
+
 	paths := flag.Args()
 	if len(paths) == 0 {
 		usage()
-	}
-
-	allStats := gocyclo.Analyze(paths, regex(*ignore))
-	shownStats := allStats.SortAndFilter(*top, *over)
-
-	if *avg || *avgShort {
-		printAverage(allStats, *avgShort)
 		return
 	}
 
-	if *over > 0 && len(shownStats) > 0 {
-		return
-	}
-
-	// printStats(shownStats)
-	jsonBytes, err := json.Marshal(shownStats)
+	allStats, err := gocyclo.Analyze(paths, regex(*ignore))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("error while analyzing the file", err)
+		return
 	}
-	fmt.Println(string(jsonBytes))
+	// If the -avg flag is set, we only want to print the average
+	if *avg {
+		output.PrintAverageJSON(allStats)
+		return
+	}
+
+	shownStats := allStats.SortAndFilter(*top)
+
+	output.PrintStatsJSON(shownStats)
+	return
 }
 
 func regex(expr string) *regexp.Regexp {
@@ -94,20 +91,6 @@ func regex(expr string) *regexp.Regexp {
 		log.Fatal(err)
 	}
 	return re
-}
-
-func printStats(s gocyclo.Stats) {
-	for _, stat := range s {
-		fmt.Println(stat)
-	}
-}
-
-func printAverage(s gocyclo.Stats, short bool) {
-	avgMap := map[string]string{
-		"average": fmt.Sprintf("%.3g", s.AverageComplexity()),
-	}
-	jsonBytes, _ := json.Marshal(avgMap)
-	fmt.Println(string(jsonBytes))
 }
 
 func usage() {
