@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/dwarakauttarkar/gocyclo"
 )
 
@@ -82,8 +84,9 @@ func TestAnalyze(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		stats := gocyclo.Analyze(tt.paths, nil).
-			SortAndFilter(-1, 0)
+		stats, err := gocyclo.Analyze(tt.paths, nil)
+		assert.NoError(t, err)
+		stats.SortAndFilter(-1)
 		statLines := make([]string, len(stats))
 		for i, s := range stats {
 			statLines[i] = s.String()

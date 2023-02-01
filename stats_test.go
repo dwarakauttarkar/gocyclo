@@ -75,7 +75,6 @@ func TestSortAndFilter(t *testing.T) {
 	tests := []struct {
 		stats gocyclo.Stats
 		top   int
-		over  int
 		want  gocyclo.Stats
 	}{
 		{
@@ -85,7 +84,7 @@ func TestSortAndFilter(t *testing.T) {
 				{CyclomaticComplexity: 2},
 				{CyclomaticComplexity: 3},
 			},
-			top: -1, over: 0,
+			top: -1,
 			want: gocyclo.Stats{
 				{CyclomaticComplexity: 4},
 				{CyclomaticComplexity: 3},
@@ -100,7 +99,7 @@ func TestSortAndFilter(t *testing.T) {
 				{CyclomaticComplexity: 3},
 				{CyclomaticComplexity: 4},
 			},
-			top: 2, over: 0,
+			top: 2,
 			want: gocyclo.Stats{
 				{CyclomaticComplexity: 4},
 				{CyclomaticComplexity: 3},
@@ -114,7 +113,7 @@ func TestSortAndFilter(t *testing.T) {
 				{CyclomaticComplexity: 4},
 				{CyclomaticComplexity: 5},
 			},
-			top: -1, over: 3,
+			top: -1,
 			want: gocyclo.Stats{
 				{CyclomaticComplexity: 5},
 				{CyclomaticComplexity: 4},
@@ -129,7 +128,7 @@ func TestSortAndFilter(t *testing.T) {
 				{CyclomaticComplexity: 4},
 				{CyclomaticComplexity: 5},
 			},
-			top: 2, over: 2,
+			top: 2,
 			want: gocyclo.Stats{
 				{CyclomaticComplexity: 5},
 				{CyclomaticComplexity: 4},
@@ -137,10 +136,10 @@ func TestSortAndFilter(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		got := tt.stats.SortAndFilter(tt.top, tt.over)
+		got := tt.stats.SortAndFilter(tt.top)
 		if !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("Sort and filter (top %d over %d) for %q, got: %q, want: %q",
-				tt.top, tt.over, tt.stats, got, tt.want)
+			t.Errorf("Sort and filter (top %d) for %q, got: %q, want: %q",
+				tt.top, tt.stats, got, tt.want)
 		}
 	}
 }
