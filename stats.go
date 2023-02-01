@@ -50,15 +50,12 @@ func (s Stats) TotalCyclomaticComplexity() uint64 {
 // complexity greater than 'over'. If 'top' is negative, i.e. -1, it does
 // not limit the result. If 'over' is <= 0 it does not limit the result either,
 // because a function has a base cyclomatic complexity of at least 1.
-func (s Stats) SortAndFilter(top, over int) Stats {
+func (s Stats) SortAndFilter(top int) Stats {
 	result := make(Stats, len(s))
 	copy(result, s)
 	sort.Stable(byComplexityDesc(result))
-	for i, stat := range result {
+	for i := range result {
 		if i == top {
-			return result[:i]
-		}
-		if stat.MaintainabilityIndex <= over {
 			return result[:i]
 		}
 	}

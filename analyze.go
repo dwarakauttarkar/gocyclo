@@ -16,7 +16,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/dwarakauttarkar/gocyclo/cyclomaticindex"
 	"github.com/dwarakauttarkar/gocyclo/maintainindex"
 )
 
@@ -25,13 +24,13 @@ import (
 // all Go files under that directory are analyzed recursively.
 // Files with paths matching the 'ignore' regular expressions are skipped.
 // The 'ignore' parameter can be nil, meaning that no files are skipped.
-func Analyze(paths []string, ignore *regexp.Regexp) Stats {
+func Analyze(paths []string, ignore *regexp.Regexp) (Stats, error) {
 	var stats Stats
 	for _, path := range paths {
 		info, err := os.Stat(path)
 		if err != nil {
 			log.Printf("could not get file info for path %q: %s\n", path, err)
-			continue
+			return nil, err
 		}
 		if info.IsDir() {
 			stats = analyzeDir(path, ignore, stats)
@@ -39,7 +38,7 @@ func Analyze(paths []string, ignore *regexp.Regexp) Stats {
 			stats = analyzeFile(path, ignore, stats)
 		}
 	}
-	return stats
+	return stats, nil
 }
 
 func analyzeDir(dirname string, ignore *regexp.Regexp, stats Stats) Stats {
@@ -136,11 +135,12 @@ func (a *fileAnalyzer) addStatIfNotIgnored(node ast.Node, funcName string, doc *
 	if parseDirectives(doc).HasIgnore() {
 		return
 	}
+	cyclomaticIndex, maintainabilityIndex := maintainindex.Calculate(node, a.fileSet)
 	a.stats = append(a.stats, Stat{
 		PkgName:              a.file.Name.Name,
 		FuncName:             funcName,
-		CyclomaticComplexity: cyclomaticindex.Calculate(node),
-		MaintainabilityIndex: maintainindex.Calculate(node, a.fileSet),
+		CyclomaticComplexity: cyclomaticIndex.GetValue(),
+		MaintainabilityIndex: maintainabilityIndex.GetValue(),
 		Pos:                  a.fileSet.Position(node.Pos()),
 	})
 }

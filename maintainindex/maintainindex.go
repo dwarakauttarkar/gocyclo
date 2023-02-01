@@ -6,17 +6,18 @@ import (
 	"math"
 
 	"github.com/dwarakauttarkar/gocyclo/cyclomaticindex"
+	"github.com/dwarakauttarkar/gocyclo/entities"
 	"github.com/dwarakauttarkar/gocyclo/halstvol"
 	"github.com/dwarakauttarkar/gocyclo/loc"
 )
 
-func Calculate(fn ast.Node, fs *token.FileSet) int {
+func Calculate(fn ast.Node, fs *token.FileSet) (entities.CyclomaticComplexity, entities.MaintainabilityIndex) {
 	v := MaintainIndexVisitor{
 		MaintIdx: 0,
 		fileSet:  fs,
 	}
 	ast.Walk(&v, fn)
-	return v.MaintIdx
+	return entities.CyclomaticComplexity(v.CyclomaticComplexity), entities.MaintainabilityIndex(v.MaintIdx)
 }
 
 type MaintainIndexVisitor struct {
