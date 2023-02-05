@@ -29,30 +29,35 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/Azure/go-autorest/autorest/to"
 	"github.com/dwarakauttarkar/gocyclo"
 	"github.com/dwarakauttarkar/gocyclo/output"
 )
 
 const usageDoc = `Calculate cyclomatic complexities of Go functions.
 Usage:
-    gocyclo [flags] <Go file or directory> ...
+    gocyclo [flags] [values] <Go file or directory> ...
 
 Flags:
-    -over N               show functions with complexity > N only and
-                          return exit code 1 if the set is non-empty
-    -top N                show the top N most complex functions only
-    -avg, -avg-short      show the average complexity over all functions;
-                          the short option prints the value without a label
-    -ignore REGEX         exclude files matching the given regular expression
+    -over N             show functions with complexity > N only and
+                        return exit code 1 if the set is non-empty
+    -top N              show the top N most complex functions only
+    -avg, -avg-short    show the average complexity over all functions;
+                        the short option prints the value without a label
+    -ignore REGEX       exclude files matching the given regular expression
 
-The output fields for each line are:
-<complexity> <package> <function> <file:line:column>
+	-format   			define the output format. Default is json. For csv 
+						the -file needs to be specified. if file is not specified 
+						then the output file is saved in /tmp/gocyclo-<datetime>.csv.
+	-file				define the output file location. Default is /tmp/gocyclo-<datetime>.csv
 `
 
 func main() {
 	top := flag.Int("top", -1, "show the top N most complex functions only")
 	avg := flag.Bool("avg", false, "show the average complexity")
 	ignore := flag.String("ignore", "", "exclude files matching the given regular expression")
+	formatFlag := flag.String("format", "", "define the output format, valid values are: json (default), csv, tabular")
+	file := flag.String("file", "", "define the output file location, valid values are: /path/to/file")
 
 	log.SetFlags(0)
 	log.SetPrefix("gocyclo: ")
@@ -72,13 +77,16 @@ func main() {
 	}
 	// If the -avg flag is set, we only want to print the average
 	if *avg {
-		output.PrintAverageJSON(allStats)
+		out := output.NewStatOutput(allStats, "", nil, nil, nil)
+		out.PrintAverageJSON()
 		return
 	}
 
 	shownStats := allStats.SortAndFilter(*top)
+	out := output.NewStatOutput(shownStats, *formatFlag, file, to.BoolPtr(true), to.IntPtr(10000))
+	// if output flag is not set or set to json, print the json output
+	out.PrintStats()
 
-	output.PrintStatsJSON(shownStats)
 	return
 }
 
