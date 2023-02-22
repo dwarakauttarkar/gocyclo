@@ -1,5 +1,7 @@
 # gocyclo
 
+### This is forked from https://github.com/fzipp/gocyclo and enhanced with additional features.
+
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/fzipp/gocyclo)](https://pkg.go.dev/github.com/fzipp/gocyclo)
 ![Build Status](https://github.com/fzipp/gocyclo/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fzipp/gocyclo)](https://goreportcard.com/report/github.com/fzipp/gocyclo)
