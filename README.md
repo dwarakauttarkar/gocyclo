@@ -1,6 +1,6 @@
 # gocyclo
 
-#### A Cyclomatic complexity & maintainability index library for go language
+### Cyclomatic complexity & maintainability index library for go language
 
 #### This repository forked from <https://github.com/fzipp/gocyclo> and is enhanced with additional features
 
